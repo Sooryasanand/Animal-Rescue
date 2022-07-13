@@ -2,9 +2,9 @@ import { StyleSheet, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginScreen from "./screens/Auth/LoginScreen";
-import HomeScreen from "./screens/HomeScreen";
 import SignupScreen from "./screens/Auth/SignupScreen";
-import AccountScreen from "./screens/AccountScreen";
+import UpdateScreen from "./screens/Auth/UpdateScreen";
+import { MyTabs } from "./screens/Navigator/TabNavigator";
 
 const Stack = createNativeStackNavigator();
 
@@ -24,13 +24,13 @@ export default function App() {
         />
         <Stack.Screen
           options={{ headerShown: false }}
-          name="Home"
-          component={HomeScreen}
+          name="HomeStack"
+          component={MyTabs}
         />
         <Stack.Screen
           options={{ headerShown: false }}
-          name="Account"
-          component={AccountScreen}
+          name="Update"
+          component={UpdateScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

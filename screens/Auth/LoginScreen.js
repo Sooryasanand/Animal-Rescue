@@ -19,7 +19,7 @@ const LoginScreen = () => {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
-        navigation.navigate("Home");
+        navigation.navigate("HomeStack");
       }
     });
 
@@ -31,7 +31,6 @@ const LoginScreen = () => {
       .signInWithEmailAndPassword(email, password)
       .then((userCredentials) => {
         const user = userCredentials.user;
-        console.log("Logged in with " + user.email);
       })
       .catch((error) => alert(error.message));
   };
@@ -124,8 +123,8 @@ const styles = StyleSheet.create({
   },
 
   loginText: {
-    marginTop: 5,
+    marginTop: 15,
     color: "#0782F9",
-    fontSize: 10,
+    fontSize: 14,
   },
 });

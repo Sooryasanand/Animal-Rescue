@@ -9,41 +9,54 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { auth, db } from "../../firebase";
+import * as firebase from "firebase";
 
 const SignupScreen = () => {
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [number, setNumber] = useState("");
-  const [address, setAddress] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState();
+  const [name, setName] = useState();
+  const [number, setNumber] = useState();
+  const [address, setAddress] = useState();
+  const [password, setPassword] = useState();
 
   const navigation = useNavigation();
+  const userInfo = firebase.auth().currentUser;
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        navigation.navigate("HomeStack");
-      }
-    });
+  var docRef = db.collection("users").doc(`${auth.currentUser?.uid}`);
 
-    return unsubscribe;
-  });
+  const updateUser = () => {
+    if (name !== undefined) {
+      docRef.update({
+        username: name,
+      });
+    }
 
-  const handleSignup = () => {
-    auth
-      .createUserWithEmailAndPassword(email, password)
-      .then((userCredentials) => {
-        const user = userCredentials.user;
-        const userId = user.uid;
-        db.collection("users").doc(`${userId}`).set({
-          username: name,
-          email: email,
-          phoneNumber: number,
-          address: address,
-        });
-      })
-      .catch((error) => alert(error.message));
+    if (email !== undefined) {
+      docRef.update({
+        email: email,
+      });
+      userInfo.updateEmail(email);
+    }
+
+    if (number !== undefined) {
+      docRef.update({
+        phoneNumber: number,
+      });
+    }
+
+    if (address !== undefined) {
+      docRef.update({
+        address: address,
+      });
+    }
+
+    if (password !== undefined) {
+      userInfo.updatePassword(password);
+    }
+
+    navigation.navigate("HomeStack");
   };
+
+  var docRef = db.collection("users").doc(`${auth.currentUser?.uid}`);
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
@@ -85,19 +98,18 @@ const SignupScreen = () => {
       </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity
-          onPress={handleSignup}
+          onPress={updateUser}
           style={[styles.button, styles.buttonOutline]}
         >
-          <Text style={styles.buttonOutlineText}>Sign Up</Text>
+          <Text style={styles.buttonOutlineText}>Update</Text>
         </TouchableOpacity>
       </View>
-      <View>
+      <View style={styles.buttonContainerSecond}>
         <TouchableOpacity
-          onPress={() => {
-            navigation.navigate("Login");
-          }}
+          onPress={() => navigation.navigate("HomeStack")}
+          style={[styles.button, styles.buttonOutline]}
         >
-          <Text style={styles.loginText}>Already have an account? Login</Text>
+          <Text style={styles.buttonOutlineText}>Cancel</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
@@ -129,6 +141,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 40,
+  },
+
+  buttonContainerSecond: {
+    width: "60%",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 10,
   },
 
   button: {
